@@ -1,0 +1,14 @@
+/Motor/*.esp32h2
+/Motor/*.esp32p4
+/Motor/*.esp32s2
+/Motor/*.esp32s3
+/Motor/*.esp32
+/Motor/*.esp32c3
+/Motor/*.esp32c5
+/Motor/*.esp32c6
+/Motor/*.esp32c61
+/Motor/sdkconfig.defaults
+/Motor/sdkconfig
+/Motor/.visualgdb
+/Motor/.vs
+/Motor/build
