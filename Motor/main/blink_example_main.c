@@ -19,7 +19,7 @@
 
 // Глобальные переменные для обмена между задачами
 volatile int currentStep = 0;
-volatile uint32_t stepDelay = 5000; // Задержка между шагами в микросекундах
+volatile uint32_t stepDelay = 40000; // Задержка между шагами в микросекундах
 
 
 void init_pin()
@@ -73,7 +73,7 @@ const uint8_t stepTable[6][6] = {
 
 
 // Функция применения шага коммутации
-void applyStep(int step) {
+void process(int step) {
 	gpio_set_level(EN1, stepTable[step][0]);
 	gpio_set_level(EN2, stepTable[step][1]);
 	gpio_set_level(EN3, stepTable[step][2]);
@@ -87,10 +87,29 @@ void app_main()
 {
 	
 	init_pin();
-	
+	//motor.init
 	while (1) {
+		
+		while (stepDelay > 5000)
+		{			
+			process(currentStep);
+			
+			stepDelay = stepDelay - 10;
+	
+			currentStep = (currentStep + 1) % 6;
+    
+			// Задержка для управления скоростью
+			vTaskDelay(pdMS_TO_TICKS(stepDelay / 1000));
+			
+			ESP_LOGI(TAG, "STEP = %d", currentStep);
+			ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
+			ESP_LOGI(TAG, "stepDelay = %lu", stepDelay);
+		}
+	
+		
+		//motor.process - переключать фазы
 		// Применяем текущий шаг коммутации
-		applyStep(currentStep);
+		process(currentStep);
     
 		// Переход к следующему шагу
 		currentStep = (currentStep + 1) % 6;
@@ -100,5 +119,6 @@ void app_main()
 		
 		ESP_LOGI(TAG, "STEP = %d", currentStep);
 		ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
+		ESP_LOGI(TAG, "stepDelay = %lu", stepDelay);
 	}
 }
