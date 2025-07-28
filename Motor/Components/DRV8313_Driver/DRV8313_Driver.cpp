@@ -1,9 +1,9 @@
-
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "driver/spi_master.h"
+#include "DRV8313.h"
 
 #define IN1 GPIO_NUM_9
 #define EN1 GPIO_NUM_10
@@ -19,8 +19,11 @@
 
 // Глобальные переменные для обмена между задачами
 volatile int currentStep = 0;
-volatile uint32_t stepDelay = 40000; // Задержка между шагами в микросекундах
+volatile uint32_t stepDelay0 = 40000;// Задержка между шагами в микросекундах
 
+volatile uint32_t stepDelay1 = 4000;
+
+DRV8313_Driver Motor;
 
 void init_pin()
 {
@@ -57,23 +60,24 @@ void init_pin()
 
 // Таблица коммутации для 6 шагов (трапецеидальное управление)
 const uint8_t stepTable[6][6] = {
-	// EN1, EN2, EN3, IN1, IN2, IN3
+		// EN1, EN2, EN3, IN1, IN2, IN3
 	{ 0, 1, 1, 0, 1, 0 },
-	// Шаг 1: Фаза B включена (HIGH), Фаза C включена (LOW)
+		// Шаг 1: Фаза B включена (HIGH), Фаза C включена (LOW)
 	{ 1, 0, 1, 1, 0, 0 },
-	// Шаг 2: Фаза A включена (HIGH), Фаза C включена (LOW)
+		// Шаг 2: Фаза A включена (HIGH), Фаза C включена (LOW)
 	{ 1, 1, 0, 1, 0, 1 },
-	// Шаг 3: Фаза A включена (HIGH), Фаза B включена (LOW)
+		// Шаг 3: Фаза A включена (HIGH), Фаза B включена (LOW)
 	{ 0, 1, 1, 0, 0, 1 },
-	// Шаг 4: Фаза B включена (LOW), Фаза C включена (HIGH)
+		// Шаг 4: Фаза B включена (LOW), Фаза C включена (HIGH)
 	{ 1, 0, 1, 0, 1, 1 },
-	// Шаг 5: Фаза A включена (LOW), Фаза C включена (HIGH)
-	{ 1, 1, 0, 0, 1, 0 }  // Шаг 6: Фаза A включена (LOW), Фаза B включена (HIGH)
+		// Шаг 5: Фаза A включена (LOW), Фаза C включена (HIGH)
+	{ 1, 1, 0, 0, 1, 0 }  
+		// Шаг 6: Фаза A включена (LOW), Фаза B включена (HIGH)
 };
 
 
 // Функция применения шага коммутации
-void process(int step) {
+void pin_activation(int step) {
 	gpio_set_level(EN1, stepTable[step][0]);
 	gpio_set_level(EN2, stepTable[step][1]);
 	gpio_set_level(EN3, stepTable[step][2]);
@@ -82,43 +86,37 @@ void process(int step) {
 	gpio_set_level(IN3, stepTable[step][5]);
 }
 
-
-void app_main()
+void acceleration(uint32_t stepDelay0, uint32_t stepDelay1)
 {
-	
-	init_pin();
-	//motor.init
-	while (1) {
-		
-		while (stepDelay > 5000)
-		{			
-			process(currentStep);
+	while (stepDelay0 > stepDelay1)
+	{
+		pin_activation(currentStep);
 			
-			stepDelay = stepDelay - 10;
+		stepDelay0 = stepDelay0 - 10;
 	
-			currentStep = (currentStep + 1) % 6;
-    
-			// Задержка для управления скоростью
-			vTaskDelay(pdMS_TO_TICKS(stepDelay / 1000));
-			
-			ESP_LOGI(TAG, "STEP = %d", currentStep);
-			ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
-			ESP_LOGI(TAG, "stepDelay = %lu", stepDelay);
-		}
-	
-		
-		//motor.process - переключать фазы
-		// Применяем текущий шаг коммутации
-		process(currentStep);
-    
-		// Переход к следующему шагу
 		currentStep = (currentStep + 1) % 6;
     
 		// Задержка для управления скоростью
-		vTaskDelay(pdMS_TO_TICKS(stepDelay / 1000)); // Конвертируем микросекунды в миллисекунды
-		
+		vTaskDelay(pdMS_TO_TICKS(stepDelay0 / 1000));
+			
 		ESP_LOGI(TAG, "STEP = %d", currentStep);
 		ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
-		ESP_LOGI(TAG, "stepDelay = %lu", stepDelay);
+		ESP_LOGI(TAG, "stepDelay = %lu", stepDelay0);
 	}
+}
+
+void speed(uint32_t stepDelay1)
+{
+	// Применяем текущий шаг коммутации
+	pin_activation(currentStep);
+    
+	// Переход к следующему шагу
+	currentStep = (currentStep + 1) % 6;
+    
+	// Задержка для управления скоростью
+	vTaskDelay(pdMS_TO_TICKS(stepDelay1 / 1000)); // Конвертируем микросекунды в миллисекунды
+		
+	ESP_LOGI(TAG, "STEP = %d", currentStep);
+	ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
+	ESP_LOGI(TAG, "stepDelay = %lu", stepDelay1);
 }
