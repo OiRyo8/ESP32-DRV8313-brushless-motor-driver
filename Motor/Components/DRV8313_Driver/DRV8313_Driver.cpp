@@ -5,14 +5,14 @@
 #include "driver/spi_master.h"
 #include "DRV8313.h"
 
-#define IN1 GPIO_NUM_9
-#define EN1 GPIO_NUM_10
-#define IN2 GPIO_NUM_11
-#define EN2 GPIO_NUM_12
-#define IN3 GPIO_NUM_13
-#define EN3 GPIO_NUM_14
-#define NFAULT GPIO_NUM_5
-#define NRESET GPIO_NUM_4
+//#define IN1 GPIO_NUM_9
+//#define EN1 GPIO_NUM_10
+//#define IN2 GPIO_NUM_11
+//#define EN2 GPIO_NUM_12
+//#define IN3 GPIO_NUM_13
+//#define EN3 GPIO_NUM_14
+//#define NFAULT GPIO_NUM_5
+//#define NRESET GPIO_NUM_4
 
 #define TAG "Motor"
 
@@ -23,38 +23,49 @@ volatile uint32_t stepDelay0 = 40000;// Задержка между шагами в микросекундах
 
 volatile uint32_t stepDelay1 = 4000;
 
-DRV8313_Driver Motor;
+DRV8313_Driver::InitSettings mtr_init = {
+	.in1 = GPIO_NUM_9,
+	.in2 = GPIO_NUM_11,
+	.in3 = GPIO_NUM_13,
+	.en1 = GPIO_NUM_10,
+	.en2 = GPIO_NUM_12,
+	.en3 = GPIO_NUM_14,
+	.nreset = GPIO_NUM_4,
+	.nfault = GPIO_NUM_5,
+	};
 
-void init_pin()
+DRV8313_Driver Motor(mtr_init);
+
+void DRV8313_Driver:: init_pin()
 {
-	gpio_reset_pin(NRESET);
-	gpio_set_direction(NRESET, GPIO_MODE_OUTPUT);
+	gpio_reset_pin((gpio_num_t)settings.nreset);
+	gpio_set_direction((gpio_num_t)settings.nreset, GPIO_MODE_OUTPUT);
 	
-	gpio_reset_pin(NFAULT);
-	gpio_set_direction(NRESET, GPIO_MODE_INPUT);
-	
-	
-	gpio_reset_pin(IN1);
-	gpio_set_direction(IN1, GPIO_MODE_OUTPUT);
-	
-	gpio_reset_pin(EN1);
-	gpio_set_direction(EN1, GPIO_MODE_OUTPUT);
+	gpio_reset_pin((gpio_num_t)settings.nfault);
+	gpio_set_direction((gpio_num_t)settings.nfault, GPIO_MODE_INPUT);
 	
 	
-	gpio_reset_pin(IN2);
-	gpio_set_direction(IN2, GPIO_MODE_OUTPUT);
+	gpio_reset_pin((gpio_num_t)settings.in1);
+	gpio_set_direction((gpio_num_t)settings.in1, GPIO_MODE_OUTPUT);
 	
-	gpio_reset_pin(EN2);
-	gpio_set_direction(EN2, GPIO_MODE_OUTPUT);
+	gpio_reset_pin((gpio_num_t)settings.en1);
+	gpio_set_direction((gpio_num_t)settings.en1, GPIO_MODE_OUTPUT);
+	
+	
+	gpio_reset_pin((gpio_num_t)settings.in2);
+	gpio_set_direction((gpio_num_t)settings.in2, GPIO_MODE_OUTPUT);
+	
+	gpio_reset_pin((gpio_num_t)settings.en2);
+	gpio_set_direction((gpio_num_t)settings.en2, GPIO_MODE_OUTPUT);
 
 	
 	// Активация драйвера
-	gpio_set_level(NRESET, 1);
+	gpio_set_level((gpio_num_t)settings.nreset, 1);
   
 	// Начальное состояние - все выключено
-	gpio_set_level(EN1, 0);
-	gpio_set_level(EN2, 0);
-	gpio_set_level(EN3, 0);
+	gpio_set_level((gpio_num_t)settings.en1, 0);
+	gpio_set_level((gpio_num_t)settings.en2, 0);
+	gpio_set_level((gpio_num_t)settings.en3, 0);
 }
 
 
@@ -77,16 +88,16 @@ const uint8_t stepTable[6][6] = {
 
 
 // Функция применения шага коммутации
-void pin_activation(int step) {
-	gpio_set_level(EN1, stepTable[step][0]);
-	gpio_set_level(EN2, stepTable[step][1]);
-	gpio_set_level(EN3, stepTable[step][2]);
-	gpio_set_level(IN1, stepTable[step][3]);
-	gpio_set_level(IN2, stepTable[step][4]);
-	gpio_set_level(IN3, stepTable[step][5]);
+void DRV8313_Driver:: pin_activation(int step) {
+	gpio_set_level((gpio_num_t)settings.en1, stepTable[step][0]);
+	gpio_set_level((gpio_num_t)settings.en2, stepTable[step][1]);
+	gpio_set_level((gpio_num_t)settings.en3, stepTable[step][2]);
+	gpio_set_level((gpio_num_t)settings.in1, stepTable[step][3]);
+	gpio_set_level((gpio_num_t)settings.in2, stepTable[step][4]);
+	gpio_set_level((gpio_num_t)settings.in3, stepTable[step][5]);
 }
 
-void acceleration(uint32_t stepDelay0, uint32_t stepDelay1)
+void DRV8313_Driver:: acceleration(uint32_t stepDelay0, uint32_t stepDelay1)
 {
 	while (stepDelay0 > stepDelay1)
 	{
@@ -100,12 +111,12 @@ void acceleration(uint32_t stepDelay0, uint32_t stepDelay1)
 		vTaskDelay(pdMS_TO_TICKS(stepDelay0 / 1000));
 			
 		ESP_LOGI(TAG, "STEP = %d", currentStep);
-		ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
+		ESP_LOGI(TAG, "nFault = %d", gpio_get_level((gpio_num_t)settings.nfault));
 		ESP_LOGI(TAG, "stepDelay = %lu", stepDelay0);
 	}
 }
 
-void speed(uint32_t stepDelay1)
+void DRV8313_Driver:: speed(uint32_t stepDelay1)
 {
 	// Применяем текущий шаг коммутации
 	pin_activation(currentStep);
@@ -117,6 +128,6 @@ void speed(uint32_t stepDelay1)
 	vTaskDelay(pdMS_TO_TICKS(stepDelay1 / 1000)); // Конвертируем микросекунды в миллисекунды
 		
 	ESP_LOGI(TAG, "STEP = %d", currentStep);
-	ESP_LOGI(TAG, "nFault = %d", gpio_get_level(NFAULT));
+	ESP_LOGI(TAG, "nFault = %d", gpio_get_level((gpio_num_t)settings.nfault));
 	ESP_LOGI(TAG, "stepDelay = %lu", stepDelay1);
 }
