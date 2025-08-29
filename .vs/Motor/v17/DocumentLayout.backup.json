@@ -1,0 +1,229 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\VisualStudio\\Motor\\Motor\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313_Driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\DRV8313_Driver\\DRV8313_Driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\PWM\\PWM.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\PWM\\PWM.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\main\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:main\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\PWM\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\DRV8313_Driver\\CMakeLists.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|C:\\SysGCC\\esp32\\esp-idf\\v5.4\\tools\\cmake\\component.cmake||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\main\\blink_example_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:main\\blink_example_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|solutionrelative:Components\\DRV8313_Driver\\DRV8313.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_fault.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_types.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49739C4B-365E-47A4-B917-3F44BA14FB77}|Motor.vgdbproj|C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_sync.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 250,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CMakeLists.txt",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\CMakeLists.txt",
+              "RelativeDocumentMoniker": "CMakeLists.txt",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\CMakeLists.txt",
+              "RelativeToolTip": "CMakeLists.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-08-28T13:13:56.254Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CMakeLists.txt",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\CMakeLists.txt",
+              "RelativeDocumentMoniker": "Components\\PWM\\CMakeLists.txt",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\CMakeLists.txt",
+              "RelativeToolTip": "Components\\PWM\\CMakeLists.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-08-28T13:13:18.771Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "component.cmake",
+              "DocumentMoniker": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\tools\\cmake\\component.cmake",
+              "ToolTip": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\tools\\cmake\\component.cmake",
+              "ViewState": "AgIAANUBAAAAAAAAAIAwwOkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-08-28T12:53:54.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "mcpwm_types.h",
+              "DocumentMoniker": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_types.h",
+              "ToolTip": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_types.h",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAcwGUAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-08-28T12:40:58.297Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "mcpwm_fault.h",
+              "DocumentMoniker": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_fault.h",
+              "ToolTip": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_fault.h",
+              "ViewState": "AgIAACUAAAAAAAAAAAAowDoAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-08-28T12:36:45.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DRV8313.h",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313.h",
+              "RelativeDocumentMoniker": "Components\\DRV8313_Driver\\DRV8313.h",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313.h",
+              "RelativeToolTip": "Components\\DRV8313_Driver\\DRV8313.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-07-28T19:55:15.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PWM.h",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.h",
+              "RelativeDocumentMoniker": "Components\\PWM\\PWM.h",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.h",
+              "RelativeToolTip": "Components\\PWM\\PWM.h",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAwwBcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-08-28T11:55:23.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PWM.cpp",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.cpp",
+              "RelativeDocumentMoniker": "Components\\PWM\\PWM.cpp",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\PWM\\PWM.cpp",
+              "RelativeToolTip": "Components\\PWM\\PWM.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-08-28T11:55:19.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CMakeLists.txt",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\main\\CMakeLists.txt",
+              "RelativeDocumentMoniker": "main\\CMakeLists.txt",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\main\\CMakeLists.txt",
+              "RelativeToolTip": "main\\CMakeLists.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-07-28T20:38:39.934Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DRV8313_Driver.cpp",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313_Driver.cpp",
+              "RelativeDocumentMoniker": "Components\\DRV8313_Driver\\DRV8313_Driver.cpp",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\DRV8313_Driver.cpp",
+              "RelativeToolTip": "Components\\DRV8313_Driver\\DRV8313_Driver.cpp",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAmwGcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-28T19:55:20.623Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "blink_example_main.cpp",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\main\\blink_example_main.cpp",
+              "RelativeDocumentMoniker": "main\\blink_example_main.cpp",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\main\\blink_example_main.cpp",
+              "RelativeToolTip": "main\\blink_example_main.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-08T08:43:34.831Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CMakeLists.txt",
+              "DocumentMoniker": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\CMakeLists.txt",
+              "RelativeDocumentMoniker": "Components\\DRV8313_Driver\\CMakeLists.txt",
+              "ToolTip": "D:\\VisualStudio\\Motor\\Motor\\Components\\DRV8313_Driver\\CMakeLists.txt",
+              "RelativeToolTip": "Components\\DRV8313_Driver\\CMakeLists.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-07-28T20:39:58.12Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "mcpwm_sync.h",
+              "DocumentMoniker": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_sync.h",
+              "ToolTip": "C:\\SysGCC\\esp32\\esp-idf\\v5.4\\components\\esp_driver_mcpwm\\include\\driver\\mcpwm_sync.h",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAmwE0AAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-08-28T12:42:34.713Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
