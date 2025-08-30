@@ -22,8 +22,9 @@ public:
 	void init_pin();
 	void ncompo_enter_irq();
 	void ncompo_exit_irq();
-	void bldc_commutate_step(uint8_t step, float duty_cycle);
-	void bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms);
+	void bldc_commutate_trapeze(uint8_t step, float duty_cycle);
+	void bldc_commutate_sin(uint8_t step, uint8_t, float &, float &, float &);
+	void bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms, uint8_t MULT, float &, float &, float &);
 	void bldc_run(void);
 	bool enable;
 private: InitSettings settings;

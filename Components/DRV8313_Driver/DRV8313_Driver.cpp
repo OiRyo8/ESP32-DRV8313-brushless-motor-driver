@@ -6,6 +6,8 @@
 #include "DRV8313.h"
 #include "driver/mcpwm_prelude.h"
 #include "D:/VisualStudio/Motor/Motor/Components/PWM/PWM.h"
+#include "math.h"
+
 
 #define TAG "Motor"
 
@@ -24,6 +26,7 @@
 volatile int currentStep = 0;
 volatile uint32_t stepDelay0 = 40000; // Задержка между шагами в микросекундах
 volatile uint32_t stepDelay1 = 4000;
+float pi = acos(-1);
 
 
 bool enable;
@@ -99,7 +102,7 @@ void DRV8313_Driver::ncompo_exit_irq()
 }
 
 // Простая коммутация фаз (6-шаговая)
-void DRV8313_Driver::bldc_commutate_step(uint8_t step, float duty_cycle)
+void DRV8313_Driver::bldc_commutate_trapeze(uint8_t step, float duty_cycle)
 {
 switch (step % 6) {
 	case 0: // A high, B low, C off
@@ -153,13 +156,62 @@ switch (step % 6) {
 	}
 }
 
+void DRV8313_Driver::bldc_commutate_sin(uint8_t step, uint8_t MULT, float &duty1, float &duty2, float &duty3)
+{
+	if (duty1 >= 0)
+	{
+		PWM.comparator_in(1, duty1);
+		PWM.comparator_en(1, 100);
+		duty1 = MULT*(1 + sin(360.0f*(step % 48) / 48)) / 2;
+	}
+	else
+	{
+		PWM.comparator_in(1, 0);
+		PWM.comparator_en(1, duty1);
+		duty1 = MULT*(1 + sin(360.0f*(step % 48) / 48)) / 2;
+	}
+	
+	if (duty2 >= 0)
+	{
+		PWM.comparator_in(2, duty2);
+		PWM.comparator_en(2, 100);
+		duty2 = MULT*(1 + sin(-pi + 360.0f*(step % 48) / 48)) / 2;
+	}
+	else
+	{
+		PWM.comparator_in(2, 0);
+		PWM.comparator_en(2, duty2);
+		duty2 = MULT*(1 + sin(-pi + (360.0f*(step % 48) / 48))) / 2;
+	}
+	
+	if (duty3 >= 0)
+	{
+		PWM.comparator_in(3, duty3);
+		PWM.comparator_en(3, 100);
+		duty3 = MULT*(1 + sin(2*pi + (360.0f*(step % 48) / 48))) / 2;
+	}
+	else
+	{
+		PWM.comparator_in(3, 0);
+		PWM.comparator_en(3, duty3);
+		duty3 = MULT*(1 + sin(2*pi + (360.0f*(step % 48) / 48))) / 2;
+	}
+}
 
 // Задача для управления двигателем
-void DRV8313_Driver::bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms)
+void DRV8313_Driver::bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms, uint8_t MULT, float &duty1, float &duty2, float &duty3)
 {
 	ESP_LOGI(TAG, "Шаг коммутации: %d, Скважность: %.1f%%", step, duty_cycle);
-	bldc_commutate_step(step, duty_cycle);
-	step++;
+	if (MULT > 100)
+	{
+		bldc_commutate_trapeze(step, duty_cycle);
+		step++;
+	}
+	else
+	{
+		bldc_commutate_sin(step, MULT, duty1, duty2, duty3);
+		step++;
+	}
 	vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
 }
         
@@ -167,8 +219,15 @@ void DRV8313_Driver::bldc_control_task(uint8_t &step, float duty_cycle, uint32_t
 void DRV8313_Driver::bldc_run(void)
 {
 	uint8_t step = 0;
-	float duty_cycle = 10.0f; // Начальная скважность (10%)
-	uint32_t step_delay_ms = 10; // Задержка между шагами (уменьшите для большей скорости)
+	float duty_cycle = 0.0f; // Начальная скважность (10%)
+	float duty1 = 0.0f;
+	float duty2 = -1.0f;
+	float duty3 = -1.0f;
+//	float* duty1 = &d1;
+//	float* duty2 = &d2;
+//	float* duty3 = &d3;
+	uint32_t step_delay_ms = 100; // Задержка между шагами (уменьшите для большей скорости)
+	uint8_t MULT = 100;
 	gpio_set_level(NRESET, 0);
 	vTaskDelay(pdMS_TO_TICKS(20));
 	gpio_set_level(NRESET, 1);
@@ -185,7 +244,7 @@ void DRV8313_Driver::bldc_run(void)
 		}
 		if (Motor.enable == true)
 		{
-			Motor.bldc_control_task(step, duty_cycle, step_delay_ms);
+			Motor.bldc_control_task(step, duty_cycle, step_delay_ms, MULT, duty1, duty2, duty3);
 		}
 		else {
 			ESP_LOGI(TAG, "Низкое значение NCOMPO");

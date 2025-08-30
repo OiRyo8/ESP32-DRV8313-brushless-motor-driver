@@ -149,10 +149,13 @@ void DRV8313_PWM::comparator_en(uint8_t number_out, float duty_cycle)
 	{
 	case 1:
 		set_phase_pwm(comparator_en1, duty_cycle);
+	break;
 	case 2:
 		set_phase_pwm(comparator_en2, duty_cycle);
+	break;
 	case 3:
 		set_phase_pwm(comparator_en3, duty_cycle);
+	break;
 	}
 }
 
@@ -162,9 +165,12 @@ void DRV8313_PWM::comparator_in(uint8_t number_out, float duty_cycle)
 	{
 	case 1:
 		set_phase_pwm(comparator_in1, duty_cycle);
+	break;
 	case 2:
 		set_phase_pwm(comparator_in2, duty_cycle);
+	break;
 	case 3:
 		set_phase_pwm(comparator_in3, duty_cycle);
+	break;
 	}
 }
