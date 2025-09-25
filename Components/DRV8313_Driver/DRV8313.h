@@ -23,11 +23,20 @@ public:
 	void ncompo_enter_irq();
 	void ncompo_exit_irq();
 	void bldc_commutate_trapeze(uint8_t step, float duty_cycle);
-	void bldc_commutate_sin(uint8_t step, uint8_t, float &, float &, float &);
-	void bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms, uint8_t MULT, float &, float &, float &);
+	void bldc_commutate_sin(float field_degrees, uint8_t);
+	void bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms, uint8_t MULT);
+	void bldc_control_task_servo(float duty_cycle, uint32_t step_delay_ms, uint8_t MULT);
 	void bldc_run(void);
+	void bldc_run_servo();
+	void bldc_set_target(float);
+	void bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase);
 	bool enable;
 private: InitSettings settings;
+	float duty1 = 0.0f;
+	float duty2 = -1.0f;
+	float duty3 = -1.0f;
+	float rotor_degrees_current;
+	float rotor_degrees_target;
 };
 
 extern DRV8313_Driver Motor;

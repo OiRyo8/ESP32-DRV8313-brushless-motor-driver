@@ -3,5 +3,5 @@
 idf_component_register(
 	SRCS "DRV8313_Driver.cpp"
 	INCLUDE_DIRS "." 
-	REQUIRES driver
+	REQUIRES driver PWM
 )

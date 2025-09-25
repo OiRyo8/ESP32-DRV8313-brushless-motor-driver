@@ -7,18 +7,11 @@
 
 extern "C"
 
-/*void app_main()
-{
-	Motor.init_pin();
-	Motor.acceleration(50000, 5000);
-	Motor.speed(5000);
-}*/
-
-
 void app_main()
 {
 	Motor.init_pin();
 	
 	// Создание задачи для управления двигателем
-	Motor.bldc_run();
+	Motor.bldc_set_target(359);
+	Motor.bldc_run_servo();
 }

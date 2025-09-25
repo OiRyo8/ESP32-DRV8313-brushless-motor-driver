@@ -5,6 +5,7 @@
 #include "driver/spi_master.h"
 #include "PWM.h"
 #include "driver/mcpwm_prelude.h"
+#include "math.h"
 
 #define TAG "PWM"
 
@@ -22,7 +23,7 @@ static mcpwm_cmpr_handle_t comparator_en2 = NULL;
 static mcpwm_cmpr_handle_t comparator_en1 = NULL;
 static mcpwm_timer_handle_t timer = NULL;
 
-
+//Инрициализация пинов
 DRV8313_PWM::InitSettings pwm_init = {
 	.in1 = GPIO_NUM_9,
 	.in2 = GPIO_NUM_11,
@@ -40,7 +41,7 @@ DRV8313_PWM PWM(pwm_init);
 // Инициализация MCPWM
 void DRV8313_PWM::bldc_mcpwm_init(void)
 {
-	ESP_LOGI(TAG, "Инициализация MCPWM для BLDC управления");
+	ESP_LOGI(TAG, "Инициализация MCPWM для управления BLDC ");
 	// Конфигурация таймера
 	mcpwm_timer_config_t timer_config = {
 		.group_id = 0,
@@ -100,7 +101,7 @@ void DRV8313_PWM::bldc_mcpwm_init(void)
     
 	generator_config.gen_gpio_num = settings.en2;
 	ESP_ERROR_CHECK(mcpwm_new_generator(oper_2, &generator_config, &gen_b_high));
-	generator_config.gen_gpio_num = settings.in1;
+	generator_config.gen_gpio_num = settings.in2;
 	ESP_ERROR_CHECK(mcpwm_new_generator(oper_2, &generator_config, &gen_b_low));
     
 	generator_config.gen_gpio_num = settings.en3;
@@ -139,10 +140,11 @@ void DRV8313_PWM::bldc_mcpwm_init(void)
 void DRV8313_PWM::set_phase_pwm(mcpwm_cmpr_handle_t comparator, float duty_cycle)
 {
 	uint32_t period_ticks = PWM_RESOLUTION_HZ / PWM_FREQUENCY_HZ;
-	uint32_t compare_ticks = (period_ticks * duty_cycle) / 100;
+	uint32_t compare_ticks = fabs((period_ticks * duty_cycle) / 100);
 	ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, compare_ticks));
 }
 
+//Включение компараторов
 void DRV8313_PWM::comparator_en(uint8_t number_out, float duty_cycle)
 {
 	switch (number_out)
