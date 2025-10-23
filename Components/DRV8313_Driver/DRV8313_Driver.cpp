@@ -14,15 +14,16 @@
 #define BLDC_STEPS 48 //Количество шагов на 360 градусов
 #define STEP_DELAY 10 // Задержка между шагами (уменьшите для большей скорости)
 
+volatile bool ncompo_low;
 
 //Настройка пинов
 DRV8313_Driver::InitSettings mtr_init = {
-	.in1 = GPIO_NUM_9,
-	.in2 = GPIO_NUM_11,
-	.in3 = GPIO_NUM_13,
-	.en1 = GPIO_NUM_10,
-	.en2 = GPIO_NUM_12,
-	.en3 = GPIO_NUM_14,
+	.in1 = GPIO_NUM_14,
+	.in2 = GPIO_NUM_12,
+	.in3 = GPIO_NUM_10,
+	.en1 = GPIO_NUM_13,
+	.en2 = GPIO_NUM_11,
+	.en3 = GPIO_NUM_9,
 	.nfault = GPIO_NUM_4,
 	.nreset = GPIO_NUM_5,
 	.ncompo = GPIO_NUM_6,
@@ -34,6 +35,8 @@ DRV8313_Driver Motor(mtr_init);
 //Инициализация пинов
 void DRV8313_Driver::init_pin()
 {
+	ESP_LOGI(TAG, "Motor initialisation");
+	
 	gpio_reset_pin((gpio_num_t)settings.nreset);
 	gpio_set_direction((gpio_num_t)settings.nreset, GPIO_MODE_OUTPUT);
 	
@@ -194,11 +197,59 @@ void DRV8313_Driver::bldc_control_task_servo(float duty_cycle, uint32_t step_del
 	vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
 }        
 
+
 void DRV8313_Driver::bldc_set_target(float target)
 {
 	rotor_degrees_target = target;
 }
 
+
+void IRAM_ATTR ncompo_isr_handler(void* arg)
+{
+	ncompo_low = 1;
+}
+
+
+void DRV8313_Driver::setup_ncompo_isr()
+{
+	// Настраиваем ncompo как вход с прерыванием
+	gpio_config_t io_conf = {
+		.pin_bit_mask = (1ULL << settings.ncompo),
+		.mode = GPIO_MODE_INPUT,
+		.pull_up_en = GPIO_PULLUP_ENABLE,
+		.pull_down_en = GPIO_PULLDOWN_DISABLE,
+		.intr_type = GPIO_INTR_NEGEDGE // Обычно нужно только по NEGEDGE (low)
+	};
+	gpio_config(&io_conf);
+	
+	// Привязываем обработчик
+	gpio_install_isr_service(0);
+	gpio_isr_handler_add(GPIO_NUM_6, ncompo_isr_handler, (void*) settings.ncompo);
+}
+
+void ncompo_low_task(void *pvParameter) {
+	TickType_t xLastWakeTime;
+	const TickType_t xPeriod = pdMS_TO_TICKS(100);
+
+	// Инициализация переменной для первого вызова.
+	xLastWakeTime = xTaskGetTickCount();
+
+	for (;;) {
+		if (ncompo_low == 1)
+		{
+			ESP_LOGI(TAG, "Низкое значение NCOMPO");
+			PWM.comparator_in(3, 0);
+			PWM.comparator_in(2, 0);
+			PWM.comparator_in(1, 0);
+			PWM.comparator_en(3, 0);
+			PWM.comparator_en(2, 0);
+			PWM.comparator_en(1, 0);
+			vTaskDelay(pdMS_TO_TICKS(5));
+		} 
+		vTaskDelayUntil(&xLastWakeTime, xPeriod);
+	}
+}
+	
 void DRV8313_Driver::bldc_run_servo()
 {
 	float duty_cycle = 0.0f;
@@ -210,30 +261,12 @@ void DRV8313_Driver::bldc_run_servo()
 	
 	while (1)
 	{
-		if (gpio_get_level((gpio_num_t)settings.ncompo) == 0)
-		{
-			Motor.ncompo_enter_irq();
-		}
-		else
-		{
-			Motor.ncompo_exit_irq();
-		}
-		if (Motor.enable == true)
-		{
-			Motor.bldc_control_task_servo(duty_cycle, step_delay_ms, MULT);
-		}
-		else {
-			ESP_LOGI(TAG, "Низкое значение NCOMPO");
-			PWM.comparator_in(3, 0);
-			PWM.comparator_in(2, 0);
-			PWM.comparator_in(1, 0);
-			PWM.comparator_en(3, 0);
-			PWM.comparator_en(2, 0);
-			PWM.comparator_en(1, 0);
-		}
+		Motor.bldc_control_task_servo(duty_cycle, step_delay_ms, MULT);
+		xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
 		vTaskDelay(pdMS_TO_TICKS(5));
 	}
 }
+
 
 void DRV8313_Driver::bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase)
 {

@@ -19,6 +19,8 @@ public:
 		: settings(settings)
 	{
 	}
+	static void ncompo_low_task(void *pvParameter);
+	void setup_ncompo_isr();
 	void init_pin();
 	void ncompo_enter_irq();
 	void ncompo_exit_irq();
