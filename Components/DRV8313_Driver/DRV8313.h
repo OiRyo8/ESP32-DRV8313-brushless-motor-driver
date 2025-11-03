@@ -32,6 +32,7 @@ public:
 	void bldc_run_servo();
 	void bldc_set_target(float);
 	void bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase);
+	void servo_low();
 	bool enable;
 private: InitSettings settings;
 	float duty1 = 0.0f;

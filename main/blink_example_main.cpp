@@ -6,37 +6,71 @@
 #include "driver/mcpwm_prelude.h"
 #include "DRV8313.h"
 
-extern "C"
 	
-#define BUTTON_GPIO   GPIO_NUM_20
+#define BUTTON_GPIO1   GPIO_NUM_21
+#define BUTTON_GPIO2   GPIO_NUM_37
+#define BUTTON_GPIO3   GPIO_NUM_38
 #define BUTTON_POLL_MS 100
 #define BUTTON_POLL_TICKS (pdMS_TO_TICKS(BUTTON_POLL_MS))
 	
-void button_task(void *pvParameter) {
-	TickType_t xLastWakeTime;
-	const TickType_t xPeriod = BUTTON_POLL_TICKS;
+extern DRV8313_Driver Motor;
 
-	// Инициализация переменной для первого вызова.
-	xLastWakeTime = xTaskGetTickCount();
+void button_task(void *pvParameter) {
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	const TickType_t xPeriod = BUTTON_POLL_TICKS;
+    
+	// Новая переменная для хранения предыдущего состояния
+	int prev_button_state1 = gpio_get_level(BUTTON_GPIO1);
+	int prev_button_state2 = gpio_get_level(BUTTON_GPIO2); 
+	int prev_button_state3 = gpio_get_level(BUTTON_GPIO3); 
 
 	for (;;) {
-		if (gpio_get_level(BUTTON_GPIO) == 0)
+		int current_button_state1 = gpio_get_level(BUTTON_GPIO1);
+		int current_button_state2 = gpio_get_level(BUTTON_GPIO2);
+		int current_button_state3 = gpio_get_level(BUTTON_GPIO3);
+
+		// Условие: Кнопка была отпущена (HIGH) и стала нажата (LOW)
+		if (prev_button_state1 == 1 && current_button_state1 == 0) 
 		{
-			Motor.bldc_set_target(359);
+			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
+			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
+			Motor.bldc_set_target(10);
 			Motor.bldc_run_servo();
 		} 
+		if (prev_button_state2 == 1 && current_button_state2 == 0) 
+		{
+			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
+			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
+			Motor.bldc_set_target(-10);
+			Motor.bldc_run_servo();
+		} 
+		if (prev_button_state3 == 1 && current_button_state3 == 0) 
+		{
+			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
+			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
+			Motor.servo_low();
+		} 
+        
+		// Обновляем предыдущее состояние для следующего цикла
+		prev_button_state1 = current_button_state1;
+
 		vTaskDelayUntil(&xLastWakeTime, xPeriod);
 	}
 }
 
 
+
+extern "C"
 void app_main() {
 	
-gpio_set_direction(BUTTON_GPIO, GPIO_MODE_INPUT);
-gpio_set_pull_mode(BUTTON_GPIO, GPIO_PULLUP_ONLY);
+gpio_set_direction(BUTTON_GPIO1, GPIO_MODE_INPUT);
+gpio_set_pull_mode(BUTTON_GPIO1, GPIO_PULLUP_ONLY);
+gpio_set_direction(BUTTON_GPIO2, GPIO_MODE_INPUT);
+gpio_set_pull_mode(BUTTON_GPIO2, GPIO_PULLUP_ONLY);
+gpio_set_direction(BUTTON_GPIO3, GPIO_MODE_INPUT);
+gpio_set_pull_mode(BUTTON_GPIO3, GPIO_PULLUP_ONLY);
 	
 Motor.init_pin();
-	
 xTaskCreate(button_task, "Button", 2048, NULL, 5, NULL);
 	
 }
