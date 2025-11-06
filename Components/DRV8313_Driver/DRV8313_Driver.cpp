@@ -97,7 +97,7 @@ void DRV8313_Driver::bldc_run_servo()
 	gpio_set_level((gpio_num_t)settings.nreset, 0);
 	vTaskDelay(pdMS_TO_TICKS(20));
 	gpio_set_level((gpio_num_t)settings.nreset, 1);
-	xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
+	//xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
 	
 	if (rotor_degrees_target == rotor_degrees_current)
 	{
@@ -146,19 +146,25 @@ void DRV8313_Driver::bldc_commutate_sin(float field_degrees, uint8_t MULT)
 
 //Задание фазы ШИМ
 void DRV8313_Driver::bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase)
-{
-	float radians = (field_degrees + offset) * (acos(-1) / 180);
-	if (duty_cycle >= 0)
+{	if (enable)
 	{
-		PWM.comparator_in(phase, duty_cycle);
-		PWM.comparator_en(phase, duty_cycle);
-		duty_cycle = MULT*(sin(radians));
+		float radians = (field_degrees + offset) * (acos(-1) / 180);
+		if (duty_cycle >= 0)
+		{
+			PWM.comparator_in(phase, duty_cycle);
+			PWM.comparator_en(phase, duty_cycle);
+			duty_cycle = MULT*(sin(radians));
+		}
+		else
+		{
+			PWM.comparator_in(phase, 0);
+			PWM.comparator_en(phase, duty_cycle);
+			duty_cycle = MULT*(sin(radians));
+		}
 	}
 	else
 	{
-		PWM.comparator_in(phase, 0);
-		PWM.comparator_en(phase, duty_cycle);
-		duty_cycle = MULT*(sin(radians));
+		servo_low();
 	}
 }
 

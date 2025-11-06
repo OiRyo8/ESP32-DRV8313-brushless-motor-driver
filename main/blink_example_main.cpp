@@ -15,6 +15,13 @@
 	
 extern DRV8313_Driver Motor;
 
+void run_servo(void *)
+{
+	for (;;) {
+		Motor.bldc_run_servo();
+	}
+}
+
 void button_task(void *pvParameter) {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	const TickType_t xPeriod = BUTTON_POLL_TICKS;
@@ -23,7 +30,8 @@ void button_task(void *pvParameter) {
 	int prev_button_state1 = gpio_get_level(BUTTON_GPIO1);
 	int prev_button_state2 = gpio_get_level(BUTTON_GPIO2); 
 	int prev_button_state3 = gpio_get_level(BUTTON_GPIO3); 
-
+	bool motor_enable_toggle = false;
+	
 	for (;;) {
 		int current_button_state1 = gpio_get_level(BUTTON_GPIO1);
 		int current_button_state2 = gpio_get_level(BUTTON_GPIO2);
@@ -32,27 +40,30 @@ void button_task(void *pvParameter) {
 		// Условие: Кнопка была отпущена (HIGH) и стала нажата (LOW)
 		if (prev_button_state1 == 1 && current_button_state1 == 0) 
 		{
-			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
 			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
 			Motor.bldc_set_target(10);
 			Motor.bldc_run_servo();
 		} 
 		if (prev_button_state2 == 1 && current_button_state2 == 0) 
 		{
-			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
 			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
 			Motor.bldc_set_target(-10);
 			Motor.bldc_run_servo();
 		} 
 		if (prev_button_state3 == 1 && current_button_state3 == 0) 
 		{
-			// --- СРАБАТЫВАНИЕ НА НАЖАТИЕ ---
-			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
-			Motor.servo_low();
-		} 
-        
-		// Обновляем предыдущее состояние для следующего цикла
-		prev_button_state1 = current_button_state1;
+			if (!motor_enable_toggle)
+			{
+				motor_enable_toggle = true;
+				ESP_LOGI("BUTTON", "Button Pressed! Stop.");
+				Motor.enable = !Motor.enable;
+			}
+		}
+		else
+		{
+			motor_enable_toggle = false;
+		}
+       
 
 		vTaskDelayUntil(&xLastWakeTime, xPeriod);
 	}
@@ -71,6 +82,7 @@ gpio_set_direction(BUTTON_GPIO3, GPIO_MODE_INPUT);
 gpio_set_pull_mode(BUTTON_GPIO3, GPIO_PULLUP_ONLY);
 	
 Motor.init_pin();
-xTaskCreate(button_task, "Button", 2048, NULL, 5, NULL);
+xTaskCreate(run_servo, "Motor", 3072, NULL, 5, NULL);
+xTaskCreate(button_task, "Button", 3072, NULL, 5, NULL);
 	
 }
