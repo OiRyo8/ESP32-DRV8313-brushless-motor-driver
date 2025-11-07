@@ -18,7 +18,7 @@ extern DRV8313_Driver Motor;
 void run_servo(void *)
 {
 	for (;;) {
-		Motor.bldc_run_servo();
+		Motor.bldc_run_servo(Motor.duty_cycle, Motor.step_delay_ms, Motor.MULT);
 	}
 }
 
@@ -42,13 +42,11 @@ void button_task(void *pvParameter) {
 		{
 			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
 			Motor.bldc_set_target(10);
-			Motor.bldc_run_servo();
 		} 
 		if (prev_button_state2 == 1 && current_button_state2 == 0) 
 		{
 			ESP_LOGI("BUTTON", "Button Pressed! Running motor.");
 			Motor.bldc_set_target(-10);
-			Motor.bldc_run_servo();
 		} 
 		if (prev_button_state3 == 1 && current_button_state3 == 0) 
 		{
@@ -82,7 +80,17 @@ gpio_set_direction(BUTTON_GPIO3, GPIO_MODE_INPUT);
 gpio_set_pull_mode(BUTTON_GPIO3, GPIO_PULLUP_ONLY);
 	
 Motor.init_pin();
-xTaskCreate(run_servo, "Motor", 3072, NULL, 5, NULL);
+	
+// Создание задачи Motor на Ядре 1 (CPU 1)
+xTaskCreatePinnedToCore(
+	run_servo,         // Функция задачи
+	"Motor_Control",    // Имя задачи
+	4096,               // Размер стека
+	NULL,               // Параметры
+	5,                  // Приоритет (например, 5)
+	NULL,               // Дескриптор
+	1 // <<--- Назначение на CPU 1
+);
 xTaskCreate(button_task, "Button", 3072, NULL, 5, NULL);
 	
 }

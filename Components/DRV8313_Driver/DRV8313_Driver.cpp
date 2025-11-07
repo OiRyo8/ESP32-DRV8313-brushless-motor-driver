@@ -80,6 +80,15 @@ void DRV8313_Driver::init_pin()
 	PWM.bldc_mcpwm_init();
 	
 	rotor_degrees_current = 0;
+	
+	
+	duty_cycle = 0.0f;
+	step_delay_ms = STEP_DELAY;
+	MULT = 100;
+	gpio_set_level((gpio_num_t)settings.nreset, 0);
+	vTaskDelay(pdMS_TO_TICKS(20));
+	gpio_set_level((gpio_num_t)settings.nreset, 1);
+	//xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
 }
 
 
@@ -89,31 +98,18 @@ void DRV8313_Driver::bldc_set_target(float target)
 }
 
 
-void DRV8313_Driver::bldc_run_servo()
+void DRV8313_Driver::bldc_run_servo(float, uint32_t, uint8_t)
 {
-	float duty_cycle = 0.0f;
-	uint32_t step_delay_ms = STEP_DELAY;
-	uint8_t MULT = 100;
-	gpio_set_level((gpio_num_t)settings.nreset, 0);
-	vTaskDelay(pdMS_TO_TICKS(20));
-	gpio_set_level((gpio_num_t)settings.nreset, 1);
-	//xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
-	
-	if (rotor_degrees_target == rotor_degrees_current)
+	if ((rotor_degrees_target != rotor_degrees_current) and (enable))
 	{
-		gpio_set_level((gpio_num_t)Motor.settings.in1, 0);
-		gpio_set_level((gpio_num_t)Motor.settings.in2, 0);
-		gpio_set_level((gpio_num_t)Motor.settings.in3, 0);
-		gpio_set_level((gpio_num_t)Motor.settings.en1, 0);
-		gpio_set_level((gpio_num_t)Motor.settings.en2, 0);
-		gpio_set_level((gpio_num_t)Motor.settings.en3, 0);
-		vTaskDelay(pdMS_TO_TICKS(5));
+		while (rotor_degrees_target != rotor_degrees_current) {
+			Motor.bldc_control_task_servo(duty_cycle, step_delay_ms, MULT);
+		}
 	}
 	else
 	{ 
-		while (rotor_degrees_target != rotor_degrees_current) {
-			Motor.bldc_control_task_servo(duty_cycle, step_delay_ms, MULT);
-			vTaskDelay(pdMS_TO_TICKS(5));
+		while ((rotor_degrees_target == rotor_degrees_current) and (!enable)) {
+			servo_low();
 		}
 	}
 }
@@ -146,8 +142,7 @@ void DRV8313_Driver::bldc_commutate_sin(float field_degrees, uint8_t MULT)
 
 //Задание фазы ШИМ
 void DRV8313_Driver::bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase)
-{	if (enable)
-	{
+{	
 		float radians = (field_degrees + offset) * (acos(-1) / 180);
 		if (duty_cycle >= 0)
 		{
@@ -161,11 +156,6 @@ void DRV8313_Driver::bldc_set_phase_pwm(float &duty_cycle, float offset, float f
 			PWM.comparator_en(phase, duty_cycle);
 			duty_cycle = MULT*(sin(radians));
 		}
-	}
-	else
-	{
-		servo_low();
-	}
 }
 
 void  DRV8313_Driver::servo_low()

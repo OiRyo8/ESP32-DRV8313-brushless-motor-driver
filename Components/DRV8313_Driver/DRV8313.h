@@ -19,21 +19,24 @@ public:
 		: settings(settings)
 	{
 	}
-	static void ncompo_low_task(void *pvParameter);
-	void setup_ncompo_isr();
+	
+	//Переменные
+	float duty_cycle;
+	uint32_t step_delay_ms;
+	uint8_t MULT;
+	bool enable;
+	
 	void init_pin();
-	void ncompo_enter_irq();
-	void ncompo_exit_irq();
-	void bldc_commutate_trapeze(uint8_t step, float duty_cycle);
-	void bldc_commutate_sin(float field_degrees, uint8_t);
-	void bldc_control_task(uint8_t &step, float duty_cycle, uint32_t step_delay_ms, uint8_t MULT);
-	void bldc_control_task_servo(float duty_cycle, uint32_t step_delay_ms, uint8_t MULT);
-	void bldc_run(void);
-	void bldc_run_servo();
 	void bldc_set_target(float);
+	void bldc_run_servo(float, uint32_t, uint8_t);
+	void bldc_control_task_servo(float duty_cycle, uint32_t step_delay_ms, uint8_t MULT);
+	void bldc_commutate_sin(float field_degrees, uint8_t);
 	void bldc_set_phase_pwm(float &duty_cycle, float offset, float field_degrees, uint8_t MULT, uint8_t phase);
 	void servo_low();
-	bool enable;
+	
+	//Прерывание
+	void setup_ncompo_isr();
+	static void ncompo_low_task(void *pvParameter);
 private: InitSettings settings;
 	float duty1 = 0.0f;
 	float duty2 = -1.0f;
