@@ -108,8 +108,11 @@ void DRV8313_Driver::bldc_run_servo(float, uint32_t, uint8_t)
 	}
 	else
 	{ 
-		while ((rotor_degrees_target == rotor_degrees_current) and (!enable)) {
+		while (rotor_degrees_target == rotor_degrees_current) {  //убрать цикл если нужно дердать сервопривод
 			servo_low();
+		}
+		while (!enable) {
+			servo_low(); 
 		}
 	}
 }
@@ -160,12 +163,12 @@ void DRV8313_Driver::bldc_set_phase_pwm(float &duty_cycle, float offset, float f
 
 void  DRV8313_Driver::servo_low()
 {
-	gpio_set_level((gpio_num_t)Motor.settings.in1, 0);
-	gpio_set_level((gpio_num_t)Motor.settings.in2, 0);
-	gpio_set_level((gpio_num_t)Motor.settings.in3, 0);
-	gpio_set_level((gpio_num_t)Motor.settings.en1, 0);
-	gpio_set_level((gpio_num_t)Motor.settings.en2, 0);
-	gpio_set_level((gpio_num_t)Motor.settings.en3, 0);
+	PWM.comparator_in(3, 0);
+	PWM.comparator_in(2, 0);
+	PWM.comparator_in(1, 0);
+	PWM.comparator_en(3, 0);
+	PWM.comparator_en(2, 0);
+	PWM.comparator_en(1, 0);
 }
 
 
