@@ -88,7 +88,7 @@ void DRV8313_Driver::init_pin()
 	gpio_set_level((gpio_num_t)settings.nreset, 0);
 	vTaskDelay(pdMS_TO_TICKS(20));
 	gpio_set_level((gpio_num_t)settings.nreset, 1);
-	//xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
+	xTaskCreate(ncompo_low_task, "ncompo_low", 2048, NULL, 5, NULL);
 }
 
 
@@ -104,15 +104,18 @@ void DRV8313_Driver::bldc_run_servo(float, uint32_t, uint8_t)
 	{
 		while (rotor_degrees_target != rotor_degrees_current) {
 			Motor.bldc_control_task_servo(duty_cycle, step_delay_ms, MULT);
+			vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
 		}
 	}
 	else
 	{ 
 		while (rotor_degrees_target == rotor_degrees_current) {  //убрать цикл если нужно дердать сервопривод
 			servo_low();
+			vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
 		}
 		while (!enable) {
 			servo_low(); 
+			vTaskDelay(pdMS_TO_TICKS(step_delay_ms));
 		}
 	}
 }

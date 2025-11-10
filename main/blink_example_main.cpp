@@ -20,6 +20,7 @@ void run_servo(void *)
 	for (;;) {
 		Motor.bldc_run_servo(Motor.duty_cycle, Motor.step_delay_ms, Motor.MULT);
 	}
+	vTaskDelay(pdMS_TO_TICKS(10));
 }
 
 void button_task(void *pvParameter) {
@@ -80,17 +81,8 @@ gpio_set_direction(BUTTON_GPIO3, GPIO_MODE_INPUT);
 gpio_set_pull_mode(BUTTON_GPIO3, GPIO_PULLUP_ONLY);
 	
 Motor.init_pin();
-	
-// Создание задачи Motor на Ядре 1 (CPU 1)
-xTaskCreatePinnedToCore(
-	run_servo,         // Функция задачи
-	"Motor_Control",    // Имя задачи
-	4096,               // Размер стека
-	NULL,               // Параметры
-	5,                  // Приоритет (например, 5)
-	NULL,               // Дескриптор
-	1 // <<--- Назначение на CPU 1
-);
+		
+xTaskCreate(run_servo, "Motor_Control", 4096, NULL, 5, NULL);
 xTaskCreate(button_task, "Button", 3072, NULL, 5, NULL);
 	
 }
